@@ -1,27 +1,19 @@
-import matplotlib.pyplot as plt
-import csv
+import pandas as pd
 from datetime import datetime
+import matplotlib.pyplot as plt
 
 now = datetime.now()
 date_now = now.strftime("%m%d%y")
 
-yaw = []
-pitch = []
-roll = []
-time = []
+df = pd.read_csv("/home/pi/Documents/SenseHat/Bike Proj/CSV files/sense_data071920.csv").round(2)
 
+#converts time column into datetime
+df.time = pd.to_datetime(df.time)
+#create hour/minutecolumns
+df['hour'] = df.time.dt.hour
+df['minute'] = df.time.dt.minute
 
-with open('sense_data'+ date_now +'.csv', 'r') as csvfile:
-    plots = csv.reader(csvfile, delimiter=',')
-    for row in plots:
-        yaw.append(row[0])
-        #pitch.append(row[1])
-        #roll.append(row[2])
-        time.append(row[12])
-        
-plt.plot(time,yaw, label = 'yaw over time')
-plt.xlabel('time')
-plt.ylabel('yaw')
-plt.title('interesting graph')
-plt.legend()
+#print(df.head)
+
+df.plot(x='time', y='acc_z', kind='line')
 plt.show()
